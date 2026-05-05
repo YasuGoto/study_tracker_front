@@ -1,5 +1,7 @@
 "use client";
 
+import { login } from "@/lib/auth/fetch";
+import { setAccessToken } from "@/lib/common/fetch";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -11,15 +13,30 @@ export default function Login() {
 
   useEffect(() => {
     // ログイン済みの場合はホームページにリダイレクト
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem("access_token")) {
       router.push("/home");
     }
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await login(email, password);
+      setAccessToken(response.access_token);
+      router.push("/home");
+    } catch (error) {
+      if (error && typeof error === "object" && "message" in error) {
+        setError((error as { message: string }).message);
+      } else {
+        setError("An error occurred");
+      }
+    }
+  };
+
   return (
     <div>
       <h1>Login</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
           value={email}
@@ -30,7 +47,7 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="button">Login</button>
+        <button type="submit">Login</button>
         <p>{error}</p>
       </form>
     </div>
