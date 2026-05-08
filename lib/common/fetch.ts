@@ -48,7 +48,7 @@ async function parseError(res: Response): Promise<ApiError> {
 export async function apiFetch<TResponse>(
   path: string,
   options: RequestInit = {},
-): Promise<TResponse> {
+): Promise<TResponse | null> {
   const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
 
   const headers = new Headers(options.headers);
