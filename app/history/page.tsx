@@ -8,6 +8,7 @@ type PeriodSummary = {
 };
 
 export default function History() {
+  const MS_PER_DAY = 86_400_000;
   const START_DATE = "2026-01-01";
   const END_DATE = "2026-05-11";
   const [summaries, setSummaries] = useState<PeriodSummary[]>([]);
@@ -24,5 +25,18 @@ export default function History() {
     };
     fetchSummaries();
   }, []);
+  const days = [];
+
+  const diffDays = Math.round(
+    (new Date(END_DATE).getTime() - new Date(START_DATE).getTime()) /
+      MS_PER_DAY,
+  );
+  const inclusiveDays = diffDays + 1;
+
+  for (let i = 0; i < inclusiveDays; i++) {
+    const date = new Date(new Date(START_DATE).getTime() + i * MS_PER_DAY);
+    days.push(date);
+  }
+
   return <div>History</div>;
 }
