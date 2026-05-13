@@ -9,8 +9,10 @@ type PeriodSummary = {
 
 export default function History() {
   const MS_PER_DAY = 86_400_000;
-  const START_DATE = "2026-01-01";
-  const END_DATE = "2026-05-11";
+  const jstNow = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+  const jstOneYearAgo = new Date(jstNow.getTime() - 365 * 24 * 60 * 60 * 1000);
+  const END_DATE = jstNow.toISOString().split("T")[0];
+  const START_DATE = jstOneYearAgo.toISOString().split("T")[0];
   const [summaries, setSummaries] = useState<PeriodSummary[]>([]);
   useEffect(() => {
     const fetchSummaries = async () => {
@@ -25,8 +27,9 @@ export default function History() {
     };
     fetchSummaries();
   }, []);
-  const days = [];
 
+  // 日付の配列を作成
+  const days = [];
   const diffDays = Math.round(
     (new Date(END_DATE).getTime() - new Date(START_DATE).getTime()) /
       MS_PER_DAY,
@@ -38,5 +41,27 @@ export default function History() {
     days.push(date);
   }
 
-  return <div>History</div>;
+  // 色の判定
+  const postColor = (totalSeconds: number | undefined) => {
+    if (totalSeconds === undefined) return "bg-gray-100";
+    if (totalSeconds > 10000) return "bg-green-400";
+    if (totalSeconds > 5000) return "bg-green-200";
+    if (totalSeconds > 3000) return "bg-green-100";
+    return "bg-gray-100";
+  };
+
+  return (
+    <div className="flex flex-col">
+      {days.map((day) => (
+        <div
+          key={day.toISOString()}
+          className={postColor(
+            summaries.find((summary) => summary.date === day)?.totalSeconds,
+          )}
+        >
+          {day.toISOString()}
+        </div>
+      ))}
+    </div>
+  );
 }
