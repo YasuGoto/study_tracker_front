@@ -42,24 +42,41 @@ export default function History() {
   }
 
   // 色の判定
-  const postColor = (totalSeconds: number | undefined) => {
-    if (totalSeconds === undefined) return "bg-gray-100";
-    if (totalSeconds > 10000) return "bg-green-400";
-    if (totalSeconds > 5000) return "bg-green-200";
-    if (totalSeconds > 3000) return "bg-green-100";
-    return "bg-gray-100";
+  const postColor = (totalSeconds: number | undefined): string => {
+    if (totalSeconds === undefined) return "#e5e7eb";
+    if (totalSeconds > 3600) return "#16a34a";
+    if (totalSeconds > 1800) return "#4ade80";
+    if (totalSeconds > 600) return "#bbf7d0";
+    return "#dcfce7";
   };
 
+  const weeks = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
   return (
-    <div className="flex flex-col">
-      {days.map((day) => (
-        <div
-          key={day.toISOString()}
-          className={postColor(
-            summaries.find((summary) => summary.date === day)?.totalSeconds,
-          )}
-        >
-          {day.toISOString()}
+    <div className="flex gap-1 overflow-x-auto">
+      {weeks.map((week, weekIndex) => (
+        <div key={weekIndex} className="flex flex-col gap-1">
+          {week.map((day) => (
+            <div
+              key={day.toISOString()}
+              style={{
+                backgroundColor: postColor(
+                  summaries.find(
+                    (summary) =>
+                      new Date(
+                        new Date(summary.date).getTime() + 9 * 60 * 60 * 1000,
+                      )
+                        .toISOString()
+                        .split("T")[0] === day.toISOString().split("T")[0],
+                  )?.totalSeconds,
+                ),
+              }}
+              className="w-4 h-4"
+            />
+          ))}
         </div>
       ))}
     </div>
