@@ -21,7 +21,8 @@ export function isLoggedIn(): boolean {
   return Boolean(getAccessToken());
 }
 
-export const API_BASE_URL = "http://localhost:3000";
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000";
 
 async function parseError(res: Response): Promise<ApiError> {
   const status = res.status;
