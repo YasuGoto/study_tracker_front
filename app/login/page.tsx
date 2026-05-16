@@ -22,6 +22,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await login(email, password);
+      if (!response) return;
       setAccessToken(response.access_token);
       router.push("/home");
     } catch (error) {

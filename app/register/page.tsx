@@ -22,7 +22,7 @@ export default function Register() {
     e.preventDefault();
     try {
       const response = await register(email, password);
-      console.log(response);
+      if (!response) return;
       setAccessToken(response.access_token);
       router.push("/home");
     } catch (error) {
