@@ -54,11 +54,40 @@ export default function History() {
   for (let i = 0; i < days.length; i += 7) {
     weeks.push(days.slice(i, i + 7));
   }
+  const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthLabels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   return (
     <div className="flex gap-1 overflow-x-auto">
+      <div className="flex flex-col gap-1">
+        <div className="h-4" />
+        {weekLabels.map((label) => (
+          <div key={label} className="h-4 text-xs flex items-center">
+            {label}
+          </div>
+        ))}
+      </div>
       {weeks.map((week, weekIndex) => (
         <div key={weekIndex} className="flex flex-col gap-1">
+          <div className="h-4 text-xs">
+            {weekIndex === 0 ||
+            week[0].getMonth() !== weeks[weekIndex - 1][0].getMonth()
+              ? monthLabels[week[0].getMonth()]
+              : ""}
+          </div>
           {week.map((day) => (
             <div
               key={day.toISOString()}
